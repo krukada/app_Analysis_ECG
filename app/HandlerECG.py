@@ -258,26 +258,30 @@ class HandlerECG:
         return M / self.mc
 
     def moda_and_amplitude(self, peaks):
-        delta = 0.0
-        eps = 0.01
+        eps = 0.02
+
         f = np.zeros(len(peaks))
         count_mode = np.zeros(len(peaks))
+
         for i in range(len(peaks) - 1):
-            delta += (peaks[i + 1] - peaks[i])
             f[i] = (peaks[i + 1] - peaks[i])
+
         for m in range(len(f)):
             count = 0
+
             for t in range(len(f) - 1):
                 if math.fabs(f[t + 1] - f[m]) / self.mc < eps:
                     count += 1
+
             count_mode[m] = count
         max = len(peaks) - 1
+
         for m in range(len(count_mode)):
             if count_mode[max] < count_mode[m]:
                 max = m
 
         def amplitude_mode():
-            return 100 * max / len(peaks)
+            return 100 * count_mode[max] / len(peaks)
 
         return f[max] / self.mc, amplitude_mode()
 
